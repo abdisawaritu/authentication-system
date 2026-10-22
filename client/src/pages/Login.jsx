@@ -1,46 +1,37 @@
 import { useState } from "react";
-import { apiRequest } from "../services/api";
+import { Link, useLocation, useNavigate } from "react-router-dom";
+
+import { useAuth } from "../context/AuthContext";
 import styles from "./Login.module.css";
 
-function Login({ onSwitchToRegister }) {
-  const [formData, setFormData] = useState({
-    email: "",
-    password: "",
-  });
+function Login() {
+  const { loginUser } = useAuth();
 
-  const [status, setStatus] = useState("");
-  const [error, setError] = useState("");
+  const navigate = useNavigate();
+  const location = useLocation();
+
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [errorMessage, setErrorMessage] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
 
-  function handleChange(event) {
-    const { name, value } = event.target;
-
-    setFormData((previousData) => ({
-      ...previousData,
-      [name]: value,
-    }));
-  }
+  const registrationMessage = location.state?.message;
 
   async function handleSubmit(event) {
     event.preventDefault();
 
-    setStatus("");
-    setError("");
+    setErrorMessage("");
     setIsSubmitting(true);
 
     try {
-      const data = await apiRequest("/auth/login", {
-        method: "POST",
-        body: JSON.stringify(formData),
-      });
+      await loginUser(email, password);
 
-      setStatus(data.message || "Login successful.");
-      setFormData({
-        email: "",
-        password: "",
-      });
-    } catch (err) {
-      setError(err.message || "Login failed. Please try again.");
+      // Return to the originally requested page, or the dashboard.
+      const destination = location.state?.from?.pathname || "/dashboard";
+
+      navigate(destination, { replace: true });
+    } catch (error) {
+      setErrorMessage(error.message || "Login failed. Please try again.");
     } finally {
       setIsSubmitting(false);
     }
@@ -49,50 +40,53 @@ function Login({ onSwitchToRegister }) {
   return (
     <main className={styles.page}>
       <section className={styles.card}>
-        <h1 className={styles.title}>Welcome back</h1>
-        <p className={styles.subtitle}>Log in to your account.</p>
+        <h1 className={styles.title}>Log in</h1>
 
-        <form onSubmit={handleSubmit}>
+        <p className={styles.description}>
+          Enter your account details to continue.
+        </p>
+
+        {registrationMessage && (
+          <p className={styles.success} role="status">
+            {registrationMessage}
+          </p>
+        )}
+
+        {errorMessage && (
+          <p className={styles.error} role="alert">
+            {errorMessage}
+          </p>
+        )}
+
+        <form className={styles.form} onSubmit={handleSubmit}>
           <div className={styles.field}>
-            <label htmlFor="login-email">Email address</label>
+            <label htmlFor="login-email">Email</label>
+
             <input
               id="login-email"
-              name="email"
               type="email"
               autoComplete="email"
-              value={formData.email}
-              onChange={handleChange}
+              value={email}
+              onChange={(event) => setEmail(event.target.value)}
               required
             />
           </div>
 
           <div className={styles.field}>
             <label htmlFor="login-password">Password</label>
+
             <input
               id="login-password"
-              name="password"
               type="password"
               autoComplete="current-password"
-              value={formData.password}
-              onChange={handleChange}
+              value={password}
+              onChange={(event) => setPassword(event.target.value)}
               required
             />
           </div>
 
-          {error && (
-            <p className={styles.error} role="alert">
-              {error}
-            </p>
-          )}
-
-          {status && (
-            <p className={styles.success} role="status">
-              {status}
-            </p>
-          )}
-
           <button
-            className={styles.submitButton}
+            className={styles.button}
             type="submit"
             disabled={isSubmitting}
           >
@@ -100,15 +94,8 @@ function Login({ onSwitchToRegister }) {
           </button>
         </form>
 
-        <p className={styles.switchText}>
-          Don't have an account?{" "}
-          <button
-            type="button"
-            className={styles.linkButton}
-            onClick={onSwitchToRegister}
-          >
-            Register
-          </button>
+        <p className={styles.footer}>
+          Don't have an account? <Link to="/register">Register</Link>
         </p>
       </section>
     </main>

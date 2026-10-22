@@ -2,38 +2,45 @@
 .page {
   min-height: 100vh;
   display: flex;
-  align-items: center;
   justify-content: center;
+  align-items: center;
   padding: 24px;
-  background: var(--color-background);
+  background-color: var(--color-background);
 }
 
 .card {
   width: 100%;
-  max-width: 440px;
+  max-width: 420px;
   padding: 32px;
-  background: var(--color-white);
-  border-radius: 12px;
-  box-shadow: 0 8px 28px rgba(0, 0, 0, 0.08);
+  border: 1px solid #e5e7eb;
+  border-radius: 10px;
+  background-color: var(--color-white);
+  box-shadow: 0 4px 12px rgb(0 0 0 / 8%);
 }
 
 .title {
   margin-bottom: 8px;
-  color: var(--color-text);
-  font-size: 1.8rem;
-  font-weight: 700;
+  color: var(--color-primary);
+  font-size: 28px;
+  text-align: center;
 }
 
-.subtitle {
+.description {
   margin-bottom: 24px;
-  color: #666666;
+  color: var(--color-text);
+  text-align: center;
+}
+
+.form {
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
 }
 
 .field {
   display: flex;
   flex-direction: column;
   gap: 6px;
-  margin-bottom: 18px;
 }
 
 .field label {
@@ -42,8 +49,8 @@
 
 .field input {
   width: 100%;
-  padding: 11px 12px;
-  border: 1px solid #cccccc;
+  padding: 10px 12px;
+  border: 1px solid #cbd5e1;
   border-radius: 6px;
 }
 
@@ -52,40 +59,26 @@
   outline-offset: 1px;
 }
 
-.submitButton {
-  width: 100%;
-  padding: 12px;
+.button {
+  padding: 11px 16px;
   border: none;
   border-radius: 6px;
-  background: var(--color-primary);
+  background-color: var(--color-primary);
   color: white;
-  font-weight: 600;
+  cursor: pointer;
 }
 
-.submitButton:disabled {
+.button:disabled {
   cursor: not-allowed;
   opacity: 0.65;
 }
 
-.error {
-  margin-bottom: 12px;
-  color: #b42318;
-}
-
-.success {
-  margin-bottom: 12px;
-  color: #187443;
-}
-
-.switchText {
+.footer {
   margin-top: 22px;
+  margin-bottom: 0;
   text-align: center;
 }
 
-.linkButton {
-  padding: 0;
-  border: none;
-  background: transparent;
-  color: var(--color-primary);
-  text-decoration: underline;
+.error {
+  color: #b42318;
 }

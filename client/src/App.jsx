@@ -1,15 +1,26 @@
-import { useState } from "react";
-import Register from "./pages/Register";
+import { Navigate, Route, Routes } from "react-router-dom";
+
 import Login from "./pages/Login";
+import Register from "./pages/Register";
+import Dashboard from "./pages/Dashboard";
+import ProtectedRoute from "./components/ProtectedRoute";
 
 function App() {
-  const [currentPage, setCurrentPage] = useState("register");
+  return (
+    <Routes>
+      <Route path="/" element={<Navigate to="/login" replace />} />
 
-  if (currentPage === "login") {
-    return <Login onSwitchToRegister={() => setCurrentPage("register")} />;
-  }
+      <Route path="/login" element={<Login />} />
 
-  return <Register onSwitchToLogin={() => setCurrentPage("login")} />;
+      <Route path="/register" element={<Register />} />
+
+      <Route element={<ProtectedRoute />}>
+        <Route path="/dashboard" element={<Dashboard />} />
+      </Route>
+
+      <Route path="*" element={<Navigate to="/login" replace />} />
+    </Routes>
+  );
 }
 
 export default App;
