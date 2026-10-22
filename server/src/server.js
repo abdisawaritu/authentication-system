@@ -5,14 +5,17 @@ const cors = require("cors");
 const helmet = require("helmet");
 
 const authRoutes = require("./routes/auth.routes");
+const { sessionMiddleware } = require("./config/session");
 
 const app = express();
 
 const PORT = process.env.PORT || 5000;
 const CLIENT_URL = process.env.CLIENT_URL || "http://localhost:5173";
 
+// Security headers
 app.use(helmet());
 
+// Allow the React frontend to make credentialed requests
 app.use(
   cors({
     origin: CLIENT_URL,
@@ -20,29 +23,30 @@ app.use(
   }),
 );
 
-// Parse JSON requests BEFORE mounting routes.
+// Parse incoming request bodies
 app.use(express.json());
-
-// Parse HTML form submissions if needed later.
 app.use(express.urlencoded({ extended: true }));
 
-// Health check.
+// Initialize the session before handling routes
+app.use(sessionMiddleware);
+
+// Health-check endpoint
 app.get("/api/health", (req, res) => {
-  res.status(200).json({
+  return res.status(200).json({
     success: true,
     message: "Authentication API is running.",
   });
 });
 
- // Registration routes must come after the JSON parser.
+// Authentication routes
 app.use("/api/auth", authRoutes);
 
-// Handle malformed JSON.
+// Handle malformed JSON
 app.use((err, req, res, next) => {
   if (err instanceof SyntaxError && err.status === 400 && "body" in err) {
     return res.status(400).json({
       success: false,
-      message: "Invalid JSON. Check the request body syntax.",
+      message: "Invalid JSON. Check the request body.",
     });
   }
 
@@ -54,6 +58,7 @@ app.use((err, req, res, next) => {
   });
 });
 
+// Start the server
 app.listen(PORT, () => {
   console.log(`Backend server running at http://localhost:${PORT}`);
 });
