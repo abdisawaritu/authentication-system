@@ -34,7 +34,7 @@ app.get("/api/health", (req, res) => {
   });
 });
 
-// Registration routes must come after the JSON parser.
+ // Registration routes must come after the JSON parser.
 app.use("/api/auth", authRoutes);
 
 // Handle malformed JSON.
