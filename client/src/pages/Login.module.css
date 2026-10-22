@@ -1,0 +1,91 @@
+
+.page {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 24px;
+  background: var(--color-background);
+}
+
+.card {
+  width: 100%;
+  max-width: 440px;
+  padding: 32px;
+  background: var(--color-white);
+  border-radius: 12px;
+  box-shadow: 0 8px 28px rgba(0, 0, 0, 0.08);
+}
+
+.title {
+  margin-bottom: 8px;
+  color: var(--color-text);
+  font-size: 1.8rem;
+  font-weight: 700;
+}
+
+.subtitle {
+  margin-bottom: 24px;
+  color: #666666;
+}
+
+.field {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  margin-bottom: 18px;
+}
+
+.field label {
+  font-weight: 600;
+}
+
+.field input {
+  width: 100%;
+  padding: 11px 12px;
+  border: 1px solid #cccccc;
+  border-radius: 6px;
+}
+
+.field input:focus {
+  outline: 2px solid var(--color-primary);
+  outline-offset: 1px;
+}
+
+.submitButton {
+  width: 100%;
+  padding: 12px;
+  border: none;
+  border-radius: 6px;
+  background: var(--color-primary);
+  color: white;
+  font-weight: 600;
+}
+
+.submitButton:disabled {
+  cursor: not-allowed;
+  opacity: 0.65;
+}
+
+.error {
+  margin-bottom: 12px;
+  color: #b42318;
+}
+
+.success {
+  margin-bottom: 12px;
+  color: #187443;
+}
+
+.switchText {
+  margin-top: 22px;
+  text-align: center;
+}
+
+.linkButton {
+  padding: 0;
+  border: none;
+  background: transparent;
+  color: var(--color-primary);
+  text-decoration: underline;
+}

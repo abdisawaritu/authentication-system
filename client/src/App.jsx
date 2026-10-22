@@ -1,10 +1,15 @@
+import { useState } from "react";
+import Register from "./pages/Register";
+import Login from "./pages/Login";
+
 function App() {
-  return (
-    <main className="container py-5">
-      <h1>Authentication System</h1>
-      <p>Frontend project setup is ready.</p>
-    </main>
-  );
+  const [currentPage, setCurrentPage] = useState("register");
+
+  if (currentPage === "login") {
+    return <Login onSwitchToRegister={() => setCurrentPage("register")} />;
+  }
+
+  return <Register onSwitchToLogin={() => setCurrentPage("login")} />;
 }
 
 export default App;
