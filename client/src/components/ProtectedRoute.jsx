@@ -1,21 +1,33 @@
-import { Navigate, Outlet, useLocation } from "react-router-dom";
+import { Navigate, Outlet } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
 
 function ProtectedRoute() {
-  const { user, loading } = useAuth();
-  const location = useLocation();
+  const { user, loading, authError, refreshUser } = useAuth();
 
-  // Wait for the backend session check to finish.
   if (loading) {
     return <p className="text-center mt-5">Checking your session...</p>;
   }
 
-  // Send unauthenticated users to login.
-  if (!user) {
-    return <Navigate to="/login" replace state={{ from: location }} />;
+  if (authError) {
+    return (
+      <div className="container mt-5 text-center">
+        <p role="alert">We could not verify your session.</p>
+
+        <button
+          className="btn btn-primary"
+          type="button"
+          onClick={() => refreshUser().catch(() => {})}
+        >
+          Try again
+        </button>
+      </div>
+    );
   }
 
-  // Render the protected page.
+  if (!user) {
+    return <Navigate to="/login" replace />;
+  }
+
   return <Outlet />;
 }
 

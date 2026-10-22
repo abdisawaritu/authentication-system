@@ -24,9 +24,13 @@ function Login() {
     setIsSubmitting(true);
 
     try {
-      await loginUser(email, password);
+      const authenticatedUser = await loginUser(email, password);
 
-      // Return to the originally requested page, or the dashboard.
+      if (!authenticatedUser) {
+        setErrorMessage("Your login could not be verified. Please try again.");
+        return;
+      }
+
       const destination = location.state?.from?.pathname || "/dashboard";
 
       navigate(destination, { replace: true });
@@ -67,7 +71,10 @@ function Login() {
               type="email"
               autoComplete="email"
               value={email}
-              onChange={(event) => setEmail(event.target.value)}
+              onChange={(event) => {
+                setEmail(event.target.value);
+                setErrorMessage("");
+              }}
               required
             />
           </div>
@@ -80,7 +87,10 @@ function Login() {
               type="password"
               autoComplete="current-password"
               value={password}
-              onChange={(event) => setPassword(event.target.value)}
+              onChange={(event) => {
+                setPassword(event.target.value);
+                setErrorMessage("");
+              }}
               required
             />
           </div>
