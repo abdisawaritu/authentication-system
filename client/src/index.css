@@ -1,13 +1,60 @@
 
-* {
+/* =========================
+   Global CSS Reset
+========================= */
+
+*,
+*::before,
+*::after {
   box-sizing: border-box;
+}
+
+* {
   margin: 0;
   padding: 0;
 }
 
+/* =========================
+   Global Design Variables
+========================= */
+
+:root {
+  font-family: Arial, Helvetica, sans-serif;
+  color: #222222;
+  background-color: #f5f6f8;
+
+  font-synthesis: none;
+  text-rendering: optimizeLegibility;
+
+  --color-primary: #2563eb;
+  --color-text: #222222;
+  --color-background: #f5f6f8;
+  --color-white: #ffffff;
+}
+
+/* =========================
+   Basic Element Styles
+========================= */
+
 body {
-  margin: 0;
   min-width: 320px;
   min-height: 100vh;
-  font-family: Arial, sans-serif;
+  font-family: Arial, Helvetica, sans-serif;
+  line-height: 1.5;
+}
+
+button,
+input,
+textarea,
+select {
+  font: inherit;
+}
+
+button {
+  cursor: pointer;
+}
+
+img {
+  display: block;
+  max-width: 100%;
 }
