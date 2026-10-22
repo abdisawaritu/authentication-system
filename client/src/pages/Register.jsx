@@ -16,6 +16,39 @@ function Register() {
 
   async function handleSubmit(event) {
     event.preventDefault();
+    // Check required fields
+    if (!name.trim() && !email.trim() && !password) {
+      setErrorMessage(
+        "Please complete all required fields: full name, email address, and password.",
+      );
+      return;
+    }
+
+    if (!name.trim()) {
+      setErrorMessage("Please enter your full name.");
+      return;
+    }
+
+    if (!email.trim()) {
+      setErrorMessage("Please enter your email address.");
+      return;
+    }
+
+    if (!password) {
+      setErrorMessage("Please enter a password.");
+      return;
+    }
+
+    // Check email format
+    const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+    if (!emailPattern.test(email.trim())) {
+      setErrorMessage(
+        "Please enter a valid email address, such as name@example.com.",
+      );
+      return;
+    }
+
 
     setErrorMessage("");
     setIsSubmitting(true);
@@ -31,9 +64,23 @@ function Register() {
         },
       });
     } catch (error) {
-      setErrorMessage(
-        error.message || "Registration failed. Please try again.",
-      );
+      if (error.status === 409) {
+        setErrorMessage(
+          "An account with this email already exists. Please log in or use another email address.",
+        );
+      } else if (error.status === 400) {
+        setErrorMessage(
+          error.message || "Please check the information you entered.",
+        );
+      } else if (!error.status) {
+        setErrorMessage(
+          "We couldn't connect to the server. Please try again later.",
+        );
+      } else {
+        setErrorMessage(
+          error.message || "Registration failed. Please try again.",
+        );
+      }
     } finally {
       setIsSubmitting(false);
     }
@@ -47,12 +94,12 @@ function Register() {
         <p className={styles.description}>Register to get started.</p>
 
         {errorMessage && (
-          <p className={styles.error} role="alert">
+          <div className={styles.errorMessage} role="alert">
             {errorMessage}
-          </p>
+          </div>
         )}
 
-        <form className={styles.form} onSubmit={handleSubmit}>
+        <form className={styles.form} onSubmit={handleSubmit} noValidate>
           <div className={styles.field}>
             <label htmlFor="register-name">Full name</label>
 
@@ -63,7 +110,10 @@ function Register() {
               minLength={2}
               maxLength={100}
               value={name}
-              onChange={(event) => setName(event.target.value)}
+              onChange={(event) => {
+                setName(event.target.value);
+                setErrorMessage("");
+              }}
               required
             />
           </div>
@@ -76,7 +126,10 @@ function Register() {
               type="email"
               autoComplete="email"
               value={email}
-              onChange={(event) => setEmail(event.target.value)}
+              onChange={(event) => {
+                setEmail(event.target.value);
+                setErrorMessage("");
+              }}
               required
             />
           </div>
@@ -90,7 +143,10 @@ function Register() {
               autoComplete="new-password"
               minLength={8}
               value={password}
-              onChange={(event) => setPassword(event.target.value)}
+              onChange={(event) => {
+                setPassword(event.target.value);
+                setErrorMessage("");
+              }}
               required
             />
           </div>

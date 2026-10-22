@@ -86,3 +86,14 @@
 .success {
   color: #18794e;
 }
+.errorMessage {
+  margin-top: 12px;
+  margin-bottom: 16px;
+  padding: 12px 14px;
+  color: #842029;
+  background-color: #f8d7da;
+  border: 1px solid #f5c2c7;
+  border-radius: 6px;
+  font-size: 14px;
+  line-height: 1.5;
+}

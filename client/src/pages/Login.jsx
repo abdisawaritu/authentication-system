@@ -17,30 +17,70 @@ function Login() {
 
   const registrationMessage = location.state?.message;
 
-  async function handleSubmit(event) {
-    event.preventDefault();
+ const handleSubmit = async (event) => {
+   event.preventDefault();
+   setErrorMessage("");
 
-    setErrorMessage("");
-    setIsSubmitting(true);
+   // 1. Check for empty fields
+   if (!email.trim() && !password) {
+     setErrorMessage("Please enter your email address and password.");
+     return;
+   }
 
-    try {
-      const authenticatedUser = await loginUser(email, password);
+   if (!email.trim()) {
+     setErrorMessage("Please enter your email address.");
+     return;
+   }
 
-      if (!authenticatedUser) {
-        setErrorMessage("Your login could not be verified. Please try again.");
-        return;
-      }
+   if (!password) {
+     setErrorMessage("Please enter your password.");
+     return;
+   }
 
-      const destination = location.state?.from?.pathname || "/dashboard";
+   // 2. Check email format
+   const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
-      navigate(destination, { replace: true });
-    } catch (error) {
-      setErrorMessage(error.message || "Login failed. Please try again.");
-    } finally {
-      setIsSubmitting(false);
-    }
-  }
+   if (!emailPattern.test(email.trim())) {
+     setErrorMessage(
+       "Please enter a valid email address, such as name@example.com.",
+     );
+     return;
+   }
 
+   // 3. Continue with the existing login request
+   setIsSubmitting(true);
+
+   try {
+     const authenticatedUser = await loginUser(email.trim(), password);
+
+     if (!authenticatedUser) {
+       setErrorMessage("We couldn't verify your login. Please try again.");
+       return;
+     }
+
+     const destination = location.state?.from?.pathname || "/dashboard";
+
+     navigate(destination, { replace: true });
+   } catch (error) {
+     if (error.status === 401) {
+       setErrorMessage(
+         "Email or password is incorrect. Please check your details and try again.",
+       );
+     } else if (error.status === 400) {
+       setErrorMessage(
+         error.message || "Please check the information you entered.",
+       );
+     } else if (!error.status) {
+       setErrorMessage(
+         "We couldn't connect to the server. Please try again later.",
+       );
+     } else {
+       setErrorMessage(error.message || "Login failed. Please try again.");
+     }
+   } finally {
+     setIsSubmitting(false);
+   }
+ };
   return (
     <main className={styles.page}>
       <section className={styles.card}>
@@ -57,12 +97,12 @@ function Login() {
         )}
 
         {errorMessage && (
-          <p className={styles.error} role="alert">
+          <div className={styles.errorMessage} role="alert">
             {errorMessage}
-          </p>
+          </div>
         )}
 
-        <form className={styles.form} onSubmit={handleSubmit}>
+        <form className={styles.form} onSubmit={handleSubmit} noValidate>
           <div className={styles.field}>
             <label htmlFor="login-email">Email</label>
 
