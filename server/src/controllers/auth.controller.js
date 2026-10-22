@@ -209,7 +209,33 @@ async function loginUser(req, res) {
   }
 }
 
+function logoutUser(req, res) {
+  req.session.destroy((error) => {
+    if (error) {
+      console.error("Logout error:", error.message);
+
+      return res.status(500).json({
+        success: false,
+        message: "Could not log out. Please try again.",
+      });
+    }
+
+    res.clearCookie("auth.sid", {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === "production",
+      sameSite: "lax",
+      path: "/",
+    });
+
+    return res.status(200).json({
+      success: true,
+      message: "Logout successful.",
+    });
+  });
+}
+
 module.exports = {
   registerUser,
   loginUser,
+  logoutUser,
 };

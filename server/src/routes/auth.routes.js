@@ -1,8 +1,18 @@
 const express = require("express");
 
-const { registerUser, loginUser } = require("../controllers/auth.controller");
+const {
+  registerUser,
+  loginUser,
+  logoutUser,
+} = require("../controllers/auth.controller");
+
+const requireAuth = require("../middleware/requireAuth");
 
 const router = express.Router();
+
+// ==========================================
+// PUBLIC ROUTES
+// ==========================================
 
 // Register a new user
 router.post("/register", registerUser);
@@ -10,19 +20,19 @@ router.post("/register", registerUser);
 // Log in an existing user
 router.post("/login", loginUser);
 
-// Check whether the request has an authenticated session
-router.get("/me", (req, res) => {
-  if (!req.session || !req.session.user) {
-    return res.status(401).json({
-      success: false,
-      message: "You are not authenticated.",
-    });
-  }
+// ==========================================
+// PROTECTED ROUTES
+// ==========================================
 
+// Get the currently authenticated user
+router.get("/me", requireAuth, (req, res) => {
   return res.status(200).json({
     success: true,
     user: req.session.user,
   });
 });
+
+// Log out the authenticated user and destroy their session
+router.post("/logout", requireAuth, logoutUser);
 
 module.exports = router;
